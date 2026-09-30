@@ -65,6 +65,17 @@
   .cell-bad { background: rgba(208,59,59,0.15); }
 
   footer { font-size: 11px; color: var(--muted); margin-top: 20px; line-height: 1.6; }
+  .header-links { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .share-btn {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600;
+    margin-top: 10px; background: none; border: none; color: var(--band1); cursor: pointer;
+    font-family: inherit; padding: 0;
+  }
+  .share-toast {
+    display: inline-block; font-size: 12px; color: var(--band2); font-weight: 600;
+    margin-left: 8px; opacity: 0; transition: opacity .2s;
+  }
+  .share-toast.visible { opacity: 1; }
 </style>
 </head>
 <body>
@@ -73,10 +84,12 @@
     <h1>UK Charity &amp; Membership CRM Platforms 2026</h1>
     <p class="subtitle">A tiered qualitative market assessment by Alice Nguyen, built from real, cited user reviews and applying a directory-style ranking methodology.</p>
     <span class="badge">9 platforms, 7 coding themes</span>
-    <div>
+    <div class="header-links">
       <a href="https://github.com/codebyalice-ny/charity-crm-rankings" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;margin-top:10px;text-decoration:none;">
         &#128279; View source &amp; coding dataset on GitHub
       </a>
+      <button class="share-btn" id="share-btn" type="button">&#128228; Share this page</button>
+      <span class="share-toast" id="share-toast">Link copied!</span>
     </div>
   </header>
 
@@ -178,6 +191,30 @@ function cellClass(key, v) {
     });
   });
   container.innerHTML = html;
+})();
+
+// ---- Share button ----
+(function () {
+  const btn = document.getElementById('share-btn');
+  const toast = document.getElementById('share-toast');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    const shareData = {
+      title: document.title,
+      text: 'UK Charity & Membership CRM Platforms: a tiered qualitative market assessment by Alice Nguyen.',
+      url: window.location.href,
+    };
+    if (navigator.share) {
+      try { await navigator.share(shareData); return; } catch (e) { /* fall through to copy */ }
+    }
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.classList.add('visible');
+      setTimeout(() => toast.classList.remove('visible'), 1800);
+    } catch (e) {
+      window.prompt('Copy this link:', window.location.href);
+    }
+  });
 })();
 </script>
 </body>
